@@ -1,0 +1,6 @@
+{
+  "appId": "com.fearai.app",
+  "appName": "FearAI",
+  "webDir": "public",
+  "bundledWebRuntime": false
+}
