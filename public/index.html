@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>FearAI - Advanced Mobile AI Assistant</title>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#6d28d9">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand-container">
+      <div class="brand-logo">F</div>
+      <span class="brand-name">FearAI</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="voiceToggleBtn" title="Voice Response">
+        <i class="fas fa-volume-up"></i>
+      </button>
+      <button class="icon-btn" id="clearChatBtn" title="Clear Chat">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+      <button class="icon-btn" id="openSettingsBtn" title="Settings">
+        <i class="fas fa-cog"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Persona Selection Bar -->
+  <div class="persona-bar">
+    <button class="persona-chip active" data-persona="minecraft">
+      <i class="fas fa-cube"></i> Minecraft Developer
+    </button>
+    <button class="persona-chip" data-persona="coding">
+      <i class="fas fa-code"></i> Master Coder
+    </button>
+    <button class="persona-chip" data-persona="reasoning">
+      <i class="fas fa-brain"></i> Deep Thinker
+    </button>
+    <button class="persona-chip" data-persona="research">
+      <i class="fas fa-globe"></i> Web Research
+    </button>
+    <button class="persona-chip" data-persona="friendly">
+      <i class="fas fa-comments"></i> Friendly AI
+    </button>
+  </div>
+
+  <!-- Main Chat Container -->
+  <main class="chat-container" id="chatContainer">
+    <!-- Welcome Card -->
+    <div class="message-wrapper ai">
+      <div class="message-bubble">
+        👋 <strong>Welcome to FearAI!</strong><br><br>
+        I am your personal AI assistant tuned for <strong>Minecraft modding/plugins (Java, Bedrock, Fabric/Forge)</strong>, <strong>complex multi-language coding</strong>, <strong>deep logical reasoning</strong>, and <strong>web research</strong>.<br><br>
+        💡 <em>Tip: You can use FearAI 100% free without any API key, or enter your Free Google Gemini API Key in Settings for maximum speed!</em>
+      </div>
+    </div>
+  </main>
+
+  <!-- Input Area -->
+  <footer class="input-area">
+    <div class="input-options">
+      <label class="toggle-container">
+        <input type="checkbox" id="searchToggle">
+        <span><i class="fas fa-search"></i> Enable Live Web Research</span>
+      </label>
+      <span style="margin-left: auto;" id="activeProviderLabel">Provider: Auto (Free)</span>
+    </div>
+    <div class="input-box-wrapper">
+      <button class="icon-btn" id="micBtn" title="Voice Input">
+        <i class="fas fa-microphone"></i>
+      </button>
+      <input type="text" id="userInput" class="chat-input" placeholder="Ask FearAI or request Minecraft code..." autocomplete="off">
+      <button class="send-btn" id="sendBtn" title="Send">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </div>
+  </footer>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title"><i class="fas fa-sliders-h"></i> FearAI Settings</h2>
+        <button class="icon-btn" id="closeSettingsBtn"><i class="fas fa-times"></i></button>
+      </div>
+
+      <div class="form-group">
+        <label for="providerSelect"><i class="fas fa-server"></i> Active AI Engine Provider</label>
+        <select id="providerSelect">
+          <option value="auto">Auto / Free Default Engine (Zero Key Needed)</option>
+          <option value="gemini">Google Gemini API (100% Free Key)</option>
+          <option value="groq">Groq API (Free DeepSeek R1 & Llama 3.3)</option>
+          <option value="openrouter">OpenRouter API (Free Models)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="geminiKeyInput"><i class="key-icon fas fa-key"></i> Google Gemini API Key</label>
+        <input type="password" id="geminiKeyInput" placeholder="Paste your free Gemini API key here">
+      </div>
+
+      <div class="form-group">
+        <label for="groqKeyInput"><i class="fas fa-key"></i> Groq API Key (Optional)</label>
+        <input type="password" id="groqKeyInput" placeholder="Paste Groq API key here">
+      </div>
+
+      <button class="btn-primary" id="saveSettingsBtn"><i class="fas fa-save"></i> Save Settings</button>
+
+      <div class="key-guide-box">
+        <strong>🎁 How to get 100% FREE Gemini API Key (No Credit Card):</strong><br>
+        1. Open <a href="https://aistudio.google.com/" target="_blank" style="color: var(--accent-cyan);">Google AI Studio</a>.<br>
+        2. Log in with your Google account.<br>
+        3. Click <strong>"Get API Key"</strong> &rarr; <strong>"Create API Key"</strong>.<br>
+        4. Copy & paste the key above and hit Save!
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/system-prompts.js"></script>
+  <script src="/js/fearai-engine.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>

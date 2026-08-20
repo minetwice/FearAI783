@@ -1,0 +1,20 @@
+{
+  "name": "fear-ai-mobile",
+  "version": "1.0.0",
+  "description": "FearAI - Advanced Mobile AI Assistant for Complex Coding, Minecraft Modding, Deep Reasoning & Web Research",
+  "main": "public/index.html",
+  "scripts": {
+    "start": "npx serve public -p 3000",
+    "test": "node tests/run-tests.js"
+  },
+  "keywords": [
+    "fearai",
+    "ai",
+    "gemini",
+    "minecraft-mods",
+    "mobile-app",
+    "coding-assistant"
+  ],
+  "author": "FearAI Team",
+  "license": "MIT"
+}
