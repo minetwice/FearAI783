@@ -39,14 +39,21 @@ jobs:
           npx cap add android || true
           npx cap sync android
 
-      - name: Build Android APK with Gradle
+      - name: Build Android App with Gradle
         run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew assembleDebug
+          if [ -d "android" ]; then
+            cd android
+            chmod +x gradlew || true
+            ./gradlew assembleDebug
+          else
+            chmod +x gradlew || true
+            ./gradlew assembleDebug
+          fi
 
       - name: Upload Android APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: FearAI-Android-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            android/app/build/outputs/apk/debug/app-debug.apk
+            app/build/outputs/apk/debug/app-debug.apk
