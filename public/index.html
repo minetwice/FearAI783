@@ -24,9 +24,6 @@
       <button class="icon-btn" id="clearChatBtn" title="Clear Chat">
         <i class="fas fa-trash-alt"></i>
       </button>
-      <button class="icon-btn" id="openSettingsBtn" title="Settings">
-        <i class="fas fa-cog"></i>
-      </button>
     </div>
   </header>
 
@@ -55,8 +52,8 @@
     <div class="message-wrapper ai">
       <div class="message-bubble">
         👋 <strong>Welcome to FearAI!</strong><br><br>
-        I am your personal AI assistant tuned for <strong>Minecraft modding/plugins (Java, Bedrock, Fabric/Forge)</strong>, <strong>complex multi-language coding</strong>, <strong>deep logical reasoning</strong>, and <strong>web research</strong>.<br><br>
-        💡 <em>Tip: You can use FearAI 100% free without any API key, or enter your Free Google Gemini API Key in Settings for maximum speed!</em>
+        I am your personal AI assistant powered by the <strong>Qwen Coder Open-Source AI Model</strong>! No API key or payment required.<br><br>
+        Built for <strong>Minecraft plugins/mods (Java, Bedrock, Fabric/Forge)</strong>, <strong>complex coding in all languages</strong>, <strong>deep reasoning</strong>, and <strong>web research</strong>.
       </div>
     </div>
   </main>
@@ -68,7 +65,7 @@
         <input type="checkbox" id="searchToggle">
         <span><i class="fas fa-search"></i> Enable Live Web Research</span>
       </label>
-      <span style="margin-left: auto;" id="activeProviderLabel">Provider: Auto (Free)</span>
+      <span style="margin-left: auto;" id="activeProviderLabel">Engine: Qwen Open-Source</span>
     </div>
     <div class="input-box-wrapper">
       <button class="icon-btn" id="micBtn" title="Voice Input">
@@ -80,46 +77,6 @@
       </button>
     </div>
   </footer>
-
-  <!-- Settings Modal -->
-  <div class="modal-overlay" id="settingsModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title"><i class="fas fa-sliders-h"></i> FearAI Settings</h2>
-        <button class="icon-btn" id="closeSettingsBtn"><i class="fas fa-times"></i></button>
-      </div>
-
-      <div class="form-group">
-        <label for="providerSelect"><i class="fas fa-server"></i> Active AI Engine Provider</label>
-        <select id="providerSelect">
-          <option value="auto">Auto / Free Default Engine (Zero Key Needed)</option>
-          <option value="gemini">Google Gemini API (100% Free Key)</option>
-          <option value="groq">Groq API (Free DeepSeek R1 & Llama 3.3)</option>
-          <option value="openrouter">OpenRouter API (Free Models)</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="geminiKeyInput"><i class="key-icon fas fa-key"></i> Google Gemini API Key</label>
-        <input type="password" id="geminiKeyInput" placeholder="Paste your free Gemini API key here">
-      </div>
-
-      <div class="form-group">
-        <label for="groqKeyInput"><i class="fas fa-key"></i> Groq API Key (Optional)</label>
-        <input type="password" id="groqKeyInput" placeholder="Paste Groq API key here">
-      </div>
-
-      <button class="btn-primary" id="saveSettingsBtn"><i class="fas fa-save"></i> Save Settings</button>
-
-      <div class="key-guide-box">
-        <strong>🎁 How to get 100% FREE Gemini API Key (No Credit Card):</strong><br>
-        1. Open <a href="https://aistudio.google.com/" target="_blank" style="color: var(--accent-cyan);">Google AI Studio</a>.<br>
-        2. Log in with your Google account.<br>
-        3. Click <strong>"Get API Key"</strong> &rarr; <strong>"Create API Key"</strong>.<br>
-        4. Copy & paste the key above and hit Save!
-      </div>
-    </div>
-  </div>
 
   <script src="/js/system-prompts.js"></script>
   <script src="/js/fearai-engine.js"></script>

@@ -13,27 +13,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const clearChatBtn = document.getElementById('clearChatBtn');
   const voiceToggleBtn = document.getElementById('voiceToggleBtn');
   const searchToggle = document.getElementById('searchToggle');
-  const activeProviderLabel = document.getElementById('activeProviderLabel');
-
-  // Settings Modal Elements
-  const settingsModal = document.getElementById('settingsModal');
-  const openSettingsBtn = document.getElementById('openSettingsBtn');
-  const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-  const saveSettingsBtn = document.getElementById('saveSettingsBtn');
-  const providerSelect = document.getElementById('providerSelect');
-  const geminiKeyInput = document.getElementById('geminiKeyInput');
-  const groqKeyInput = document.getElementById('groqKeyInput');
 
   // App State
   let currentPersona = 'minecraft';
   let conversationHistory = [];
   let isVoiceEnabled = false;
-
-  // Initialize UI Values
-  geminiKeyInput.value = engine.geminiKey;
-  groqKeyInput.value = engine.groqKey;
-  providerSelect.value = engine.activeProvider;
-  updateProviderLabel();
 
   // Register PWA Service Worker if supported
   if ('serviceWorker' in navigator) {
@@ -49,27 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
       currentPersona = chip.dataset.persona;
     });
   });
-
-  // Settings Modal Controls
-  openSettingsBtn.addEventListener('click', () => settingsModal.classList.add('open'));
-  closeSettingsBtn.addEventListener('click', () => settingsModal.classList.remove('open'));
-
-  saveSettingsBtn.addEventListener('click', () => {
-    engine.setGeminiKey(geminiKeyInput.value);
-    engine.setGroqKey(groqKeyInput.value);
-    engine.setActiveProvider(providerSelect.value);
-    updateProviderLabel();
-    settingsModal.classList.remove('open');
-    appendMessage('ai', '⚙️ Settings updated successfully! FearAI is ready.');
-  });
-
-  function updateProviderLabel() {
-    let text = 'Auto (Free)';
-    if (engine.activeProvider === 'gemini') text = 'Google Gemini';
-    else if (engine.activeProvider === 'groq') text = 'Groq Engine';
-    else if (engine.activeProvider === 'openrouter') text = 'OpenRouter';
-    activeProviderLabel.textContent = `Provider: ${text}`;
-  }
 
   // Clear Chat
   clearChatBtn.addEventListener('click', () => {
@@ -156,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (err) {
       removeLoadingBubble(loadingId);
-      appendMessage('ai', `⚠️ **Error**: ${err.message || 'Failed to generate response. Please check your settings or network.'}`);
+      appendMessage('ai', `⚠️ **Error**: ${err.message || 'Failed to generate response. Please check your network connection.'}`);
     }
   }
 
@@ -183,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const bubble = document.createElement('div');
     bubble.className = 'message-bubble';
-    bubble.innerHTML = `<i class="fas fa-spinner fa-spin"></i> FearAI is thinking & writing code...`;
+    bubble.innerHTML = `<i class="fas fa-spinner fa-spin"></i> FearAI (Qwen Coder) is thinking & writing code...`;
 
     wrapper.appendChild(bubble);
     chatContainer.appendChild(wrapper);
