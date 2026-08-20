@@ -86,20 +86,19 @@ class FearAIEngine {
       try {
         return await this.callPollinationsFree(fullPrompt, conversationHistory, systemPrompt);
       } catch (fallbackErr) {
-        throw new Error(`FearAI service error: ${primaryErr.message || primaryErr}. Fallback also failed.`);
+        throw new Error(`Primary Error: ${primaryErr.message || primaryErr}. (Fallback note: ${fallbackErr.message || fallbackErr})`);
       }
     }
   }
 
   /**
-   * Google Gemini API Call (Free Tier)
+   * Google Gemini API Call with Auto-Fallback Models (gemini-2.0-flash, gemini-1.5-flash-latest, gemini-1.5-flash)
    */
   async callGemini(userPrompt, history, systemPrompt) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${this.geminiKey}`;
+    const modelsToTry = ['gemini-2.0-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-flash', 'gemini-1.5-pro'];
+    let lastError = null;
 
     const contents = [];
-
-    // Add system instruction as initial context
     contents.push({
       role: 'user',
       parts: [{ text: `System Instruction: ${systemPrompt}` }]
@@ -109,7 +108,6 @@ class FearAIEngine {
       parts: [{ text: "Understood. I am FearAI, ready to assist." }]
     });
 
-    // Add conversation history
     for (const msg of history) {
       contents.push({
         role: msg.role === 'user' ? 'user' : 'model',
@@ -117,29 +115,34 @@ class FearAIEngine {
       });
     }
 
-    // Add current user prompt
     contents.push({
       role: 'user',
       parts: [{ text: userPrompt }]
     });
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contents })
-    });
+    for (const model of modelsToTry) {
+      try {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${this.geminiKey}`;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents })
+        });
 
-    if (!response.ok) {
-      const errJson = await response.json().catch(() => ({}));
-      throw new Error(errJson.error?.message || `Gemini API HTTP Error ${response.status}`);
+        if (response.ok) {
+          const data = await response.json();
+          const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (replyText) return replyText;
+        } else {
+          const errJson = await response.json().catch(() => ({}));
+          lastError = new Error(errJson.error?.message || `Gemini ${model} HTTP ${response.status}`);
+        }
+      } catch (err) {
+        lastError = err;
+      }
     }
 
-    const data = await response.json();
-    const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!replyText) {
-      throw new Error("Empty response returned by Gemini API.");
-    }
-    return replyText;
+    throw lastError || new Error("Failed to connect to Gemini API with provided key.");
   }
 
   /**
@@ -213,33 +216,44 @@ class FearAIEngine {
   }
 
   /**
-   * Pollinations Zero-Key Free Engine
+   * Pollinations & Free Engine Zero-Key Provider
    */
   async callPollinationsFree(userPrompt, history, systemPrompt) {
-    const url = 'https://text.pollinations.ai/';
+    // Try Pollinations JSON API first
+    try {
+      const url = 'https://text.pollinations.ai/';
+      const messages = [{ role: 'system', content: systemPrompt }];
+      for (const msg of history) {
+        messages.push({ role: msg.role, content: msg.content });
+      }
+      messages.push({ role: 'user', content: userPrompt });
 
-    const messages = [{ role: 'system', content: systemPrompt }];
-    for (const msg of history) {
-      messages.push({ role: msg.role, content: msg.content });
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages,
+          model: 'openai'
+        })
+      });
+
+      if (response.ok) {
+        const text = await response.text();
+        if (text && text.trim()) return text;
+      }
+    } catch (e) {
+      console.warn("Pollinations POST endpoint failed, trying GET fallback:", e);
     }
-    messages.push({ role: 'user', content: userPrompt });
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages,
-        model: 'openai',
-        code: 'beartoken'
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error(`Free Engine HTTP Error ${response.status}`);
+    // Secondary GET fallback
+    const encodedPrompt = encodeURIComponent(`${systemPrompt}\n\nUser Question: ${userPrompt}`);
+    const getUrl = `https://text.pollinations.ai/${encodedPrompt}?model=openai`;
+    const responseGet = await fetch(getUrl);
+    if (!responseGet.ok) {
+      throw new Error(`Free Engine HTTP Error ${responseGet.status}`);
     }
-
-    const text = await response.text();
-    return text || "No response received from Free Engine.";
+    const textGet = await responseGet.text();
+    return textGet || "No response received from Free Engine.";
   }
 
   /**
